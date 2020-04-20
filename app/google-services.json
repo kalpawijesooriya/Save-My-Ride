@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "29155829443",
+    "firebase_url": "https://save-my-ride-c46c6.firebaseio.com",
+    "project_id": "save-my-ride-c46c6",
+    "storage_bucket": "save-my-ride-c46c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29155829443:android:861edb6e8883fcad382476",
+        "android_client_info": {
+          "package_name": "com.gnex.savemyride"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29155829443-28vg36qqf27ma5ns8h1mdaoabup0unsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2-encXt2XFW6AslglJV_bFdTQj7tic0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29155829443-28vg36qqf27ma5ns8h1mdaoabup0unsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

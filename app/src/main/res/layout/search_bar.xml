@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:visibility="gone"
+    android:padding="20dp"
+    android:id="@+id/toFrom"
+    android:background="@drawable/hedder_boder"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginTop="10px"
+              android:src="@drawable/heddermyloc"
+                android:layout_width="50px"
+                android:layout_height="50px">
+
+            </ImageView>
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:src="@drawable/menu"
+                android:layout_width="50px"
+                android:layout_height="50px">
+
+            </ImageView>
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:src="@drawable/hedderloc"
+                android:layout_width="50px"
+                android:layout_height="50px">
+
+            </ImageView>
+
+        </LinearLayout>
+
+<LinearLayout
+    android:layout_marginLeft="10dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <AutoCompleteTextView
+        android:id="@+id/edtTxtOrigin"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="@drawable/btn_bg_green_outline"
+        android:hint="Choose Origin"
+        android:text="Your Location"
+        android:textSize="15sp"
+        android:fontFamily="@font/poppinsmedium"
+        android:textColor="#494949"
+        android:inputType="text"
+        android:paddingLeft="15dp"
+        />
+    <AutoCompleteTextView
+        android:id="@+id/edtTxtDestination"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/poppinsmedium"
+        android:textColor="#494949"
+        android:background="@drawable/btn_bg_green_outline"
+        android:hint="Choose Destination"
+        android:inputType="text"
+        android:paddingLeft="15dp"
+        android:textSize="15sp"
+        />
+
+</LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

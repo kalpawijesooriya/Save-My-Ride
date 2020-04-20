@@ -1,0 +1,77 @@
+{
+  "markers": [
+    {
+      "road": "Panadura - Rthanapura (A8)",
+      "type": "4wy Junction",
+      "name": "Kaviraja Mv ",
+      "speed": "50",
+      "lat": "6.709624",
+      "lon": "79.915896"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "Curve",
+      "name": "Wakada Fuel Station",
+      "speed": "50",
+      "lat": "6.710112",
+      "lon": "79.913361"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "Curve",
+      "name": "Sri Sumangaka College",
+      "speed": "50",
+      "lat": "6.710298",
+      "lon": "79.914227"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "Curve",
+      "name": "Near Anura Electricals",
+      "speed": "50",
+      "lat": "6.708249",
+      "lon": "79.923809"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "Curve",
+      "name": "Near Bolgoda Bridge",
+      "speed": "50",
+      "lat": "6.702768",
+      "lon": "79.969940"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "School",
+      "name": "Bolgoda Primary School",
+      "speed": "40",
+      "lat": "6.704982",
+      "lon": "79.971703"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "Elbow-Curve",
+      "name": "Dumbara Junction",
+      "speed": "20",
+      "lat": "6.733778",
+      "lon": "80.205176"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "90-Curve",
+      "name": "PNR Hwy",
+      "speed": "20",
+      "lat": "6.731672",
+      "lon": "80.205604"
+    },
+    {
+      "Road": "Panadura - Rthanapura (A8)",
+      "type": "Curve",
+      "name": "PNR Hwy",
+      "speed": "40",
+      "lat": "6.731795",
+      "lon": "80.209083"
+    }
+  ]
+}
+
