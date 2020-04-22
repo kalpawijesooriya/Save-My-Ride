@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppinsbold"
+        android:gravity="center"
+        android:text="Your Past Rule Breaks"
+        android:textColor="@color/colorSplash"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="24sp"></TextView>
+
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:id="@+id/simple_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="765dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginBottom="21dp" />
+</RelativeLayout>

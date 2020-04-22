@@ -269,20 +269,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                            speed_warn.setVisibility(View.INVISIBLE);
                            speed_txt.setTextColor(ContextCompat.getColor(MapsActivity.this, R.color.colorAccent));
 
+
                            if(!ruleBrakes.isEmpty()){
 
 
                                Float sumSpeed=0.00F;
 
                                for (int j = 0; j < ruleBrakes.size(); j++) {
-                                   sumSpeed=sumSpeed+ruleBrakes.get(j).speed;
+                                   sumSpeed=sumSpeed+ruleBrakes.get(j).getSpeed();
                                }
                                avgSpeed=sumSpeed/ruleBrakes.size();
+
+                               if(avgSpeed>Float.valueOf(markerModels.get(i).getSpeed()))
+                               {
                                Date currentTime = Calendar.getInstance().getTime();
                                String key = mDatabase.child("RuleBreaks").child(currentUser.getUid()).push().getKey();
 
-                               RuleBreaks ruleBreaks1 = new RuleBreaks(currentTime.toString(),avgSpeed,markerModels.get(i).getSpeed(),markerModels.get(i).getLocation(),markerModels.get(i).getType());
+                               RuleBreaks ruleBreaks1 = new RuleBreaks(currentTime.toString(),avgSpeed,markerModels.get(i).getSpeed(),Double.toString(markerModels.get(i).getLocation().latitude),Double.toString(markerModels.get(i).getLocation().longitude),markerModels.get(i).getName(),markerModels.get(i).getType());
                                mDatabase.child("RuleBreaks").child(currentUser.getUid()).child(key).setValue(ruleBreaks1);
+                               }
                                ruleBrakes.clear();
                            }
 
@@ -305,7 +310,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                             speed_txt.setTextColor(ContextCompat.getColor(MapsActivity.this, R.color.colorRed));
                                             RuleBreaks obj=new RuleBreaks();
-                                            obj.speed= nCurrentSpeed;
+                                            obj.setSpeed(nCurrentSpeed);
                                             ruleBrakes.add(obj);
                                             playSound();
 

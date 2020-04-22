@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                                 imgEmailValidation.setVisibility(View.VISIBLE);
                                 imgPasswordValidation.setImageResource(R.drawable.success_field);
                                 imgPasswordValidation.setVisibility(View.VISIBLE);
-                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, LobbyActivity.class);
 
                                 intent.putExtra(EXTRA_MESSAGE, user.getUid());
                                 startActivity(intent);

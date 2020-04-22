@@ -18,8 +18,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignUp"
-            android:theme="@style/AppThemewhiteStatusbar"></activity>
+        <activity
+            android:name=".RuleBreaksActivity"
+            android:theme="@style/AppThemewhiteStatusbar" >
+        </activity>
+        <activity
+            android:name=".LobbyActivity"
+            android:theme="@style/AppThemewhiteStatusbar" />
+        <activity
+            android:name=".SignUp"
+            android:theme="@style/AppThemewhiteStatusbar" />
         <activity
             android:name=".MapsActivity"
             android:theme="@style/AppThemewhiteStatusbar" />
