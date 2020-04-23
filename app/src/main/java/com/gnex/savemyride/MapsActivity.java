@@ -106,6 +106,9 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, TaskLoadedCallback, GoogleMap.OnMarkerClickListener,LocationListener  {
 
+
+
+    //initializing variables
     private static final String TAG = "MapActivity";
     Float avgSpeed=0.00F;
     private DatabaseReference mDatabase;
@@ -151,18 +154,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); // make action bar white
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        List<String> list = new ArrayList<String>();
-        list.add("Select location on map");
-        list.add("Select location from saved places");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
 
-        List<RuleBreaks> ruleBrakes=new ArrayList<RuleBreaks>();
+
+        List<RuleBreaks> ruleBrakes=new ArrayList<RuleBreaks>(); //initialize the road brakes
 
 
         locationRequest = LocationRequest.create();
@@ -170,7 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationRequest.setInterval(1 * 1000); // 10 seconds
         locationRequest.setFastestInterval(1 * 1000); // 5 seconds
 
-
+       // assign a UI components to variables
         mSearchText = findViewById(R.id.inputSearch);
         edtTxtOrigin=findViewById(R.id.edtTxtOrigin);
         edtTxtDestination=findViewById(R.id.edtTxtDestination);
@@ -184,7 +183,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         myLocation =findViewById(R.id.myLocation);
         searchFab=findViewById(R.id.searchFab);
         toFrom=findViewById(R.id.toFrom);
-        search=(RelativeLayout)findViewById(R.id.relLayout);
+        search=findViewById(R.id.relLayout);
         notificationRel= findViewById(R.id.notificationRel);
 
         bottpmRel=findViewById(R.id.bottpmRel);
@@ -193,9 +192,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         speed_rel=findViewById(R.id.speed_rel);
         speed_txt= findViewById(R.id.speed);
         speed_warn=findViewById(R.id.speed_warn);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        getLocationPermission();
 
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        getLocationPermission();// check permissions and aks for permissions.
+
+        // on click function of Go fab button
         go.setOnLongClickListener(new View.OnLongClickListener() {
 
             @SuppressLint("RestrictedApi")
@@ -210,6 +212,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // ON Click function for Go fab Button
         searchFab.setOnLongClickListener(new View.OnLongClickListener() {
 
             @SuppressLint("RestrictedApi")
@@ -237,6 +240,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+        //  On location Callback Function
         locationCallback = new LocationCallback() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -245,31 +250,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 }
                 for (Location location : locationResult.getLocations()) {
-                    markerStart.remove();
-                    markerStart = mMap.addMarker(new MarkerOptions()
+                    markerStart.remove();// REMOVE THE passed point marker
+                    markerStart = mMap.addMarker(new MarkerOptions()   // set new Marker
                             .position(new LatLng(location.getLatitude(),location.getLongitude()))
                             .draggable(false).visible(true).title("your Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 
                     LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                    float zoom = mMap.getCameraPosition().zoom;
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, zoom));
+                    float zoom = mMap.getCameraPosition().zoom; //get Current zoom level
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, zoom)); ///call move camera to current location
 
+
+
+                    //When location changes check eny market is near
                     for (int i = 0; i < markerModels.size(); ++i) {
 
-
+                        //get the distance between current location and marker point
                         double dist = Maker.getStraightLineDistance(ll, markerModels.get(i).getLocation());
 
-
-
-
+                        //if we passed 100m from  marker
                        if(dist>=0.01 && dist<=0.1&& markerModels.get(i).isStstusPassed())
                        {
-                           notificationRel.setVisibility(View.INVISIBLE);
-                           distance_rel.setVisibility(View.INVISIBLE);
-                           speed_warn.setVisibility(View.INVISIBLE);
-                           speed_txt.setTextColor(ContextCompat.getColor(MapsActivity.this, R.color.colorAccent));
+                           notificationRel.setVisibility(View.INVISIBLE); // hide notification of information
+                           distance_rel.setVisibility(View.INVISIBLE);   // hide distance
+                           speed_warn.setVisibility(View.INVISIBLE);     // speed warn message hide
+                           speed_txt.setTextColor(ContextCompat.getColor(MapsActivity.this, R.color.colorAccent)); // speed text color changes
 
 
+                           //After we passed the Maker check we have out the max speed
                            if(!ruleBrakes.isEmpty()){
 
 
@@ -278,13 +285,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                for (int j = 0; j < ruleBrakes.size(); j++) {
                                    sumSpeed=sumSpeed+ruleBrakes.get(j).getSpeed();
                                }
-                               avgSpeed=sumSpeed/ruleBrakes.size();
+                               avgSpeed=sumSpeed/ruleBrakes.size(); // get the our Average speed
 
-                               if(avgSpeed>Float.valueOf(markerModels.get(i).getSpeed()))
+                               if(avgSpeed>Float.valueOf(markerModels.get(i).getSpeed())) // check the avg speed out of max speed
                                {
                                Date currentTime = Calendar.getInstance().getTime();
                                String key = mDatabase.child("RuleBreaks").child(currentUser.getUid()).push().getKey();
-
+                                 // save information in firebase database
                                RuleBreaks ruleBreaks1 = new RuleBreaks(currentTime.toString(),avgSpeed,markerModels.get(i).getSpeed(),Double.toString(markerModels.get(i).getLocation().latitude),Double.toString(markerModels.get(i).getLocation().longitude),markerModels.get(i).getName(),markerModels.get(i).getType());
                                mDatabase.child("RuleBreaks").child(currentUser.getUid()).child(key).setValue(ruleBreaks1);
                                }
@@ -294,25 +301,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                       }
 
                         try {
-                        if (dist<=0.040){
+                            // check whether we 300m close to the marker
+                        if (dist<=0.30){
                                    if ( !markerModels.get(i).isStstusPassed()) {
                                        notificationRel.setVisibility(View.VISIBLE);
                                        distance_rel.setVisibility(View.VISIBLE);
                                    }
-
+                                   // check whether we 10m close to the marker
                                    if(dist<=0.01)
                                     {
                                         markerModels.get(i).setStstusPassed(true);
-                                        if (nCurrentSpeed>= Float.valueOf(markerModels.get(i).getSpeed()))
+                                        if (nCurrentSpeed>= Float.valueOf(markerModels.get(i).getSpeed())) // if our speed out of max speed
                                         {
+                                            // show speed warning msg
                                             speed_warn.setText("Your Speed is Too High \n Slow down to " + markerModels.get(i).getSpeed()+" Km/h");
                                             speed_warn.setVisibility(View.VISIBLE);
 
-                                            speed_txt.setTextColor(ContextCompat.getColor(MapsActivity.this, R.color.colorRed));
+                                            speed_txt.setTextColor(ContextCompat.getColor(MapsActivity.this, R.color.colorRed));// change speed color to red
                                             RuleBreaks obj=new RuleBreaks();
                                             obj.setSpeed(nCurrentSpeed);
                                             ruleBrakes.add(obj);
-                                            playSound();
+                                            playSound(); // play sound Id we out speed
 
                                        }else {
                                             speed_warn.setVisibility(View.INVISIBLE);
@@ -323,7 +332,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
 
 
-                                   if (!markerModels.get(i).isStstus())
+                                   if (!markerModels.get(i).isStstus()) // play sound only only one time
                                    {
                                        playSound();
                                        markerModels.get(i).setStstus(true);
@@ -331,7 +340,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                    }
 
 
-
+                               // set text in to notification and distance
                                notification.setText( markerModels.get(i).getType()+ " in " +markerModels.get(i).getName());
                                distance_txt.setText( String.valueOf(df2.format(dist*1000))+ "m More");
 
@@ -351,39 +360,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
 
+
+        // ON CLICK LISTER OF START BUTTON
         startNav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                markerStart.remove();
-                DataParser obj=new DataParser();
-                JSONObject startLocation=  obj.getStart_location();
+                markerStart.remove();//remove start point marker
 
 
                 try {
 
-
+                         // change map style
                          mMap.setMapStyle(
                                 MapStyleOptions.loadRawResourceStyle(
                                         MapsActivity.this, R.raw.style_json));
 
 
 
-
+                 // add new marker
                     markerStart = mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
                             .draggable(false).visible(true).title("your Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 
 
                     LatLng ll = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 20));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 20)); // zoom map to current location
                     mMap.setMyLocationEnabled(false);
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     toFrom.setVisibility(View.INVISIBLE);
                     speed_rel.setVisibility(View.VISIBLE);
+
+                    //set and show speed
                     speed_txt.setText("-.-\nkm/h");
                     startNav.setVisibility(View.INVISIBLE);
-                    startLocationUpdates();
+                    startLocationUpdates();// location Updates enabled
                     doStuff();
 
                 } catch (Exception e) {
@@ -477,7 +488,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-
+// Requesting the LocationPermission
     private void getLocationPermission(){
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -588,20 +599,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    @Override
+    @Override // this methos is called by com.gnex.savemyride.DirectionHelpers.PointsParser after fetching the Polyline an makers
     public void onTaskDone(Object... values) throws JSONException {
         if(mCurrentPolyline!=null){
             mCurrentPolyline.remove();
         }
         bottpmRel.setVisibility(View.VISIBLE);
 
+        //1st Element is Polyline
         mCurrentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+
+       //2nd element is Markers List
         markerModels= (List<MarkerModel>) values[1];
+
+
         DataParser obj=new DataParser();
-        duration  = obj.getDuration();
-        distance = obj.getDistance();
+        duration  = obj.getDuration();// Get journey duration
+        distance = obj.getDistance();// Get journey Time
+
         time.setText(duration.getString("text"));
         far.setText("( " +distance.getString( "text")+" )");
+
+        //Set Markers
         if (markerModels!=null){
           for (int i=0;i<markerModels.size();i++)
           {
@@ -643,7 +662,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
+// In the starting getting Where is out current location
     private void getLDeviceLocation(){
         Log.d(TAG,"getDeviceLocation: getting the devices current location");
         mFusedLocationProviderClient = getFusedLocationProviderClient(this);
@@ -681,7 +700,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
+// Hide key bord function
     public static void hideSoftKeyboard(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -712,6 +731,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(MapsActivity.this);
     }
 
+
+    // move camera to what we request with zoom level
     private void moveCamera(LatLng latLng, float zoom,String title){
         Log.d(TAG,"moveCamer: moving the camera to: lat:"+latLng.latitude+" long:"+latLng.longitude);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
@@ -726,6 +747,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         hideSoftKeyboard(this, getWindow().getDecorView().getRootView());
     }
 
+    //Search  OnClick Listener
     private AdapterView.OnItemClickListener mAutoCompleteClickListener  = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -741,6 +763,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    //Origin  OnClick Listener
     private AdapterView.OnItemClickListener mAutoCompleteClickListener1  = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -756,6 +779,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    //destination  OnClick Listener
     private AdapterView.OnItemClickListener mAutoCompleteClickListener2  = new AdapterView.OnItemClickListener() {
 
         @SuppressLint("RestrictedApi")
@@ -774,7 +798,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-
+    //Search Auto complete  OnCompleteListener
     private OnCompleteListener<PlaceBufferResponse> mSearchPlaceDetailsCallback
             = new OnCompleteListener<PlaceBufferResponse>() {
         @Override
@@ -811,6 +835,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    //Destination Auto complete  OnCompleteListener
     private OnCompleteListener<PlaceBufferResponse> mToPlaceDetailsCallback
             = new OnCompleteListener<PlaceBufferResponse>() {
         @Override
@@ -847,6 +872,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    //Origin Auto complete  OnCompleteListener
     private OnCompleteListener<PlaceBufferResponse> mFromPlaceDetailsCallback
             = new OnCompleteListener<PlaceBufferResponse>() {
         @Override
@@ -888,7 +914,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-    private void moveCameraStatPoint(LatLng latLng, float zoom,String title){
+    private void moveCameraStatPoint(LatLng latLng, float zoom,String title)// this method for move camera for our Origin
+    {
         Log.d(TAG,"moveCamer: moving the camera to: lat:"+latLng.latitude+" long:"+latLng.longitude);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
 
@@ -903,7 +930,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi") // this method for move camera for our destination
     private void moveCameraDestination(final LatLng latLng, float zoom, PlaceInfo placeinfo){
         Log.d(TAG,"moveCamer: moving the camera to: lat:"+latLng.latitude+" long:"+latLng.longitude);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
@@ -945,6 +972,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+    // Calling to SHow Directions with fetching  the request
     private void showDirections(LatLng origin,LatLng destination, String travelMode){
 
         String url = getDirectionsUrl(origin,destination,travelMode,"bus");
@@ -959,11 +987,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
 
-//        MyAsyncTask runner = new MyAsyncTask(this,handler);
-//        runner.execute(origin,destination);
-        ////////////////////////////////////////////
+
     }
 
+
+    //creating a RUL for Google maps Direction API
     private String getDirectionsUrl(LatLng origin,LatLng destination, String travelMode, String transitMode ){
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -990,28 +1018,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
     private void doStuff(){
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         if (lm != null){
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0, (LocationListener) this);
-            //commented, this is from the old version
+
             // this.onLocationChanged(null);
         }
         Toast.makeText(this,"Waiting for GPS connection!", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
+    @Override   // On location change function 2 for speed update
     public void onLocationChanged(Location location) {
-
-
-
-
-
        nCurrentSpeed = location.getSpeed() * 3.6f;
-        speed_txt.setText(String.format("%.2f", nCurrentSpeed)+ "\nkm/h" );
-
-
+       speed_txt.setText(String.format("%.2f", nCurrentSpeed)+ "\nkm/h" );
     }
 
     @Override
@@ -1029,7 +1051,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
+// Play Sound method
     public void playSound() throws IllegalArgumentException,
         SecurityException,
         IllegalStateException,
